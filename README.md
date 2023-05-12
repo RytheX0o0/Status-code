@@ -1,6 +1,6 @@
 # Status-code
 
-HTTP Status Code Checker
+Status Code Checker
 
 This tool is designed to test a list of URLs and print the HTTP status code for each URL. It's a simple and easy-to-use command-line interface that's perfect for website developers, administrators, and anyone who wants to ensure that their website is running smoothly.
 Prerequisites
