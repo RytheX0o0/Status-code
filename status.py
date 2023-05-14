@@ -1,5 +1,6 @@
 import argparse
 import requests
+import termcolor
 
 # Initialize the argument parser
 parser = argparse.ArgumentParser(description="Test a list of URLs and print the HTTP status code for each URL.")
@@ -31,10 +32,10 @@ results = []
 for url in url_list[:200]:
     try:
         response = requests.get(url)
-        result = "URL: {} | Status Code: {}".format(url, response.status_code)
+        result = "[" + termcolor.colored("+", "green") + "] URL: {} | Status Code: {}".format(url, response.status_code)
         results.append(result)
     except requests.exceptions.RequestException as e:
-        result = "URL: {} | Error: {}".format(url, e)
+        result = "[" + termcolor.colored("-", "red") + "] URL: {} | Error: {}".format(url, e)
         results.append(result)
 
 # Print the results to the console
