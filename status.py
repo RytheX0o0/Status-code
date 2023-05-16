@@ -1,4 +1,5 @@
 import argparse
+import termcolor
 import requests
 
 # Initialize the argument parser
@@ -26,22 +27,63 @@ with open(args.input_file, "r") as f:
     # Read the URLs into a list
     url_list = f.read().splitlines()
 
+
 # Test each URL and print the HTTP status code
-results = []
-for url in url_list[:200]:
+results_200 = ["Status code 200"]
+results_500 = ["\nStatus code 500"]
+errorlist = ["\nErrors found"]
+print("\n---------------Checking link status----------------")
+
+for url in url_list[:10]:
     try:
         response = requests.get(url)
-        result = "URL: {} | Status Code: {}".format(url, response.status_code)
-        results.append(result)
+        if (response.status_code == 200):
+            result = "[" + termcolor.colored("+", "green") + "] URL: {} | Status Code: {}".format(url, response.status_code)
+            # result = "URL: {} | Status Code {}".format(url, response.status_code)
+            print(result)
+            results_200.append(url)
+        if (response.status_code == 500):
+            result = "[" + termcolor.colored("+", "green") + "] URL: {} | Status Code: {}".format(url, response.status_code)
+            # result = "URL: {} | Status Code {}".format(url, response.status_code)
+            print(result)
+            results_500.append(url)
     except requests.exceptions.RequestException as e:
-        result = "URL: {} | Error: {}".format(url, e)
-        results.append(result)
+        result = "[" + termcolor.colored("-", "red") + "] URL: {} | Error: {}".format(url, e)
+        # result = "URL: {} | Error: {}".format(url, e)
+        print(result)
+        error = "{} | Error: {}".format(url, e) 
+        errorlist.append(error)
+print("\n---------------Analysis Complete----------------")
+print("\n")
+print("---------------Displaying results---------------\n")
 
-# Print the results to the console
-for result in results:
-    print(result)
+
+# # Print the results to the console
+print("\n-------------------Status 200-------------------")
+if len(results_200) > 1:
+    for result in results_200[1: ]:
+        print(result)
+else:
+    print("0 links found")
+
+
+print("\n-------------------Status 500-------------------")
+if len(results_500) > 1:
+    for result in results_500[1: ]:
+        print(result)
+else:
+    print("0 links found")
+
+print("\n-------------------Erros found-------------------")
+if len(errorlist) > 1:
+    for result in errorlist[1: ]:
+        print(result)
+else:
+    print("0 errors found")
+
+final_result = results_200 + results_500 + errorlist
 
 # Save the results to a file, if specified
 if args.output:
     with open(args.output, "w") as f:
-        f.write("\n".join(results))
+        f.write("\n".join(final_result))
